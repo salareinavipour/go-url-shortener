@@ -1,0 +1,23 @@
+name: Format, Lint & Vet
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  check:
+    runs-on: golang:1.15-alpine
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Format
+      run: go fmt ./...
+
+    - name: Lint
+      run: golint ./...
+    
+    - name: Vet
+      run: go vet -v ./...
