@@ -3,6 +3,9 @@ package main
 import (
 	"fmt"
 
+	"github.com/salareinavipour/go-shortner/handler"
+	"github.com/salareinavipour/go-shortner/store"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -13,6 +16,17 @@ func main() {
 			"message": "Hey go url-shortener!",
 		})
 	})
+
+	r.POST("/create-short-url", func(c *gin.Context) {
+		handler.CreateShortUrl(c)
+	})
+
+	r.GET("/:shortUrl", func(c *gin.Context) {
+		handler.HandleShortUrlRedirect(c)
+	})
+
+	// Note that store initialization happens here
+	store.InitializeStore()
 
 	err := r.Run(":9808")
 	if err != nil {
