@@ -18,3 +18,4 @@ $ docker-compose up -d
 
 * Add Github actions
   * Test 
+* Add SQL DB for cold storage
