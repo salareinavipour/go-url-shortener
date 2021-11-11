@@ -11,5 +11,8 @@ services:
     build: .
     network_mode: "host"
     depends_on: ["redis"]
+    volumes:
+      - shortener:/cold-urls.db
 volumes:
   redis:
+  shortener:
