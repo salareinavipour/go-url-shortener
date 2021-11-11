@@ -17,7 +17,8 @@ jobs:
       run: go fmt ./...
 
     - name: Lint
-      run: golint ./...
+      uses: golangci/golangci-lint-action@v2.5.2
+
     
     - name: Vet
       run: go vet -v ./...
