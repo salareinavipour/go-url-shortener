@@ -2,11 +2,11 @@
 
 This repo contains excercises regarding URL shortener with Golang adapted from this [eddywm.com blog](https://www.eddywm.com).
 
-# Requirements
+## Requirements
 
 * Docker & docker-compose
 
-# Getting started
+## Getting started
 
 Clone this repo and then:
 
@@ -14,7 +14,7 @@ Clone this repo and then:
 $ docker-compose up -d
 ```
 
-# To-Do
+## To-Do
 
 * Add Github actions
   * Test 
