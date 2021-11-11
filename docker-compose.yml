@@ -1,5 +1,15 @@
 version: "3.9"
 services:
   redis:
-    image: "hub.hamdocker.ir/redis:alpine"
+    container_name: redis-server
+    image: "hub.hamdocker.ir/redis:alpine" # pull through cache of hamravesh.ir
     network_mode: "host"
+    volumes:
+      - redis:/data
+  web:
+    container_name: url-shortener
+    build: .
+    network_mode: "host"
+    depends_on: ["redis"]
+volumes:
+  redis:

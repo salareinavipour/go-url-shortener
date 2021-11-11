@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
-	"github.com/salareinavipour/go-shortner/handler"
-	"github.com/salareinavipour/go-shortner/store"
+	"github.com/salareinavipour/go-url-shortener/handler"
+	"github.com/salareinavipour/go-url-shortener/store"
 
 	"github.com/gin-gonic/gin"
 )
