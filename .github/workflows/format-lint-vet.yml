@@ -9,7 +9,7 @@ on:
 jobs:
 
   check:
-    runs-on: golang:1.15-alpine
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
 
