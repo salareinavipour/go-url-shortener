@@ -59,6 +59,18 @@ func SaveUrlMapping(shortUrl string, originalUrl string) {
 	if err != nil {
 		panic(fmt.Sprintf("Failed saving key url | Error: %v - shortUrl: %s - originalUrl: %s\n", err, shortUrl, originalUrl))
 	}
+
+	err = storeService.redisClient["dates"].Set(shortUrl, time.Now().String(), CacheDuration).Err()
+
+	if err != nil {
+		panic(fmt.Sprintf("Failed saving date of url | Error: %v - shortUrl: %s - date: %s\n", err, shortUrl, time.Now().String()))
+	}
+
+	err = storeService.redisClient["counts"].Set(shortUrl, 0, CacheDuration).Err()
+
+	if err != nil {
+		panic(fmt.Sprintf("Failed saving count of url usage | Error: %v - shortUrl: %s\n", err, shortUrl))
+	}
 }
 
 func StoreColdUrl(shortUrl string, originalUrl string, userId string) {
@@ -103,6 +115,11 @@ func RetrieveInitialUrl(shortUrl string) string {
 	result, err := storeService.redisClient["urls"].Get(shortUrl).Result()
 	if err != nil {
 		panic(fmt.Sprintf("Failed RetrieveInitialUrl url | Error: %v - shortUrl: %s\n", err, shortUrl))
+	}
+
+	err = storeService.redisClient["counts"].Incr(shortUrl).Err()
+	if err != nil {
+		panic(fmt.Sprintf("Failed to increase url usage count | Error: %v - shortUrl: %s\n", err, shortUrl))
 	}
 	return result
 }
