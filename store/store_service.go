@@ -16,7 +16,7 @@ var (
 	storeService = &StorageService{}
 )
 
-const CacheDuration = 6 * time.Hour
+const CacheDuration = 24 * time.Hour
 
 func InitializeStore() *StorageService {
 	redisClient := redis.NewClient(&redis.Options{
