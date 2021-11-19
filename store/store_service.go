@@ -73,18 +73,44 @@ func SaveUrlMapping(shortUrl string, originalUrl string) {
 	}
 }
 
+func inTimeSpan(start, end, check time.Time) bool {
+	return check.After(start) && check.Before(end)
+}
+
 func StoreColdUrl(shortUrl string, originalUrl string, userId string) {
-	db, err := sql.Open("sqlite3", "/cold-urls.db")
+
+	url, err := storeService.redisClient["dates"].Get(shortUrl).Result()
 
 	if err != nil {
-		panic(fmt.Sprintf("Failed saving cold url in sqlite | Error: %v - shortUrl: %s - originalUrl: %s\n", err, shortUrl, originalUrl))
+		panic(fmt.Sprintf("Failed saving date of url | Error: %v - shortUrl: %s - date: %s\n", err, shortUrl, time.Now().String()))
 	}
-	// defer close
-	defer db.Close()
 
-	stmt, _ := db.Prepare("INSERT INTO urls (id, short_url, origina_url) VALUES (?, ?, ?)")
-	stmt.Exec(nil, userId, shortUrl, originalUrl)
-	defer stmt.Close()
+	layout := "2006-01-02T15:04:05.000Z"
+	t, err := time.Parse(layout, url)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if t.Before(time.Now().Add(-time.Hour * 12)) {
+		db, err := sql.Open("sqlite3", "/cold-urls.db")
+
+		if err != nil {
+			panic(fmt.Sprintf("Failed saving cold url in sqlite | Error: %v - shortUrl: %s - originalUrl: %s\n", err, shortUrl, originalUrl))
+		}
+		// defer close
+		defer db.Close()
+
+		stmt, _ := db.Prepare("INSERT INTO urls (id, short_url, origina_url) VALUES (?, ?, ?)")
+		stmt.Exec(nil, userId, shortUrl, originalUrl)
+		defer stmt.Close()
+
+		err = storeService.redisClient["urls"].Del(shortUrl).Err()
+
+		if err != nil {
+			panic(fmt.Sprintf("Failed saving date of url | Error: %v - shortUrl: %s - date: %s\n", err, shortUrl, time.Now().String()))
+		}
+	}
 }
 
 func RetrieveColdUrl(shortUrl string) string {
